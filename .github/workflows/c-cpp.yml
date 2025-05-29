@@ -1,0 +1,30 @@
+name: Build MTProxy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-mtproxy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y git curl build-essential libssl-dev zlib1g-dev cmake make
+          # Đảm bảo 'make' và 'cmake' được cài đặt
+      - name: Build MTProxy using root Makefile
+        run: make
+
+      - name: List build output
+        run: ls -l objs/bin/
+
+      - name: Upload MTProxy artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mtproto-proxy-executable 
+          path: objs/bin/mtproto-proxy
+          if-no-files-found: error 
